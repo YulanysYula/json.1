@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group Travel Planner</title>
+  <style>
+    /* Общие стили */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9f9f9;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 10px;
+    }
+
+    p {
+      margin: 0 0 15px;
+    }
+
+    button {
+      background-color: #ff6b6b;
+      color: #fff;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #ff4b4b;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 0;
+    }
+
+    section {
+      padding: 60px 0;
+    }
+
+    /* Hero */
+    .hero {
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center/cover;
+      color: white;
+      text-align: center;
+      padding: 120px 20px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+
+    /* Problem */
+    .problem, .solution, .advantages, .cta, .testimonials {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 40px 20px;
+      margin-bottom: 40px;
+    }
+
+    .problem h2, .solution h2, .advantages h2, .cta h2, .testimonials h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #ff6b6b;
+    }
+
+    .stages {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 20px;
+    }
+
+    .stage {
+      background-color: #fef3f3;
+      flex: 1 1 200px;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stage h3 {
+      margin-bottom: 10px;
+      color: #ff6b6b;
+    }
+
+    .advantages ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .advantages li {
+      margin-bottom: 15px;
+      padding-left: 25px;
+      position: relative;
+    }
+
+    .advantages li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: #ff6b6b;
+      font-weight: bold;
+    }
+
+    .cta {
+      text-align: center;
+    }
+
+    .testimonials blockquote {
+      font-style: italic;
+      margin: 20px 0;
+      border-left: 5px solid #ff6b6b;
+      padding-left: 15px;
+      color: #555;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    footer a {
+      color: #ff6b6b;
+      margin: 0 10px;
+    }
+
+    @media(max-width: 768px){
+      .stages {
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Групповые поездки без хаоса</h1>
+    <p>Планируйте, согласовывайте и оплачивайте все этапы путешествия в одном месте — легко, быстро и удобно.</p>
+    <button>Начать планирование</button>
+  </section>
+
+  <div class="container">
+    <!-- Problem -->
+    <section class="problem">
+      <h2>Почему планирование поездки так сложно?</h2>
+      <p>Множество чатов, где теряется важная информация</p>
+      <p>Ручные расчёты бюджета и сбор подтверждений</p>
+      <p>Нет ясного финального плана</p>
+      <p>Постоянная необходимость собирать голоса и обновления</p>
+    </section>
+
+    <!-- Solution -->
+    <section class="solution">
+      <h2>Организуйте поездку за 5 простых этапов</h2>
+      <div class="stages">
+        <div class="stage">
+          <h3>Inspiration & Research</h3>
+          <p>Просматривайте направления, блоги и фотографии, узнавайте идеи от друзей</p>
+        </div>
+        <div class="stage">
+          <h3>Planning & Comparison</h3>
+          <p>Сравнивайте цены на перелёты, отели, активности, создавайте бюджет</p>
+        </div>
+        <div class="stage">
+          <h3>Booking & Confirmation</h3>
+          <p>Бронируйте, оплачивайте, сохраняйте подтверждения</p>
+        </div>
+        <div class="stage">
+          <h3>Pre-Trip Preparation</h3>
+          <p>Создавайте маршруты, пакуйте вещи, готовьтесь к поездке</p>
+        </div>
+        <div class="stage">
+          <h3>Post-Trip</h3>
+          <p>Делитесь впечатлениями, пишите отзывы, планируйте следующую поездку</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advantages -->
+    <section class="advantages">
+      <h2>Что вы получите с нашим сервисом</h2>
+      <ul>
+        <li>Экономия времени — всё в одном месте</li>
+        <li>Прозрачность бюджета — нет ошибок и недоразумений</li>
+        <li>Лёгкое согласование планов — голосования и опросы прямо в приложении</li>
+        <li>Полный контроль — каждый участник в курсе изменений</li>
+      </ul>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <h2>Готовы начать планировать вашу следующую поездку?</h2>
+      <button>Создать поездку</button>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+      <h2>Наши пользователи довольны</h2>
+      <blockquot
