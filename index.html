@@ -1,226 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Group Travel Planner</title>
-  <style>
-    /* Общие стили */
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background-color: #f9f9f9;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    h1, h2, h3 {
-      margin: 0 0 10px;
-    }
-
-    p {
-      margin: 0 0 15px;
-    }
-
-    button {
-      background-color: #ff6b6b;
-      color: #fff;
-      border: none;
-      padding: 12px 25px;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #ff4b4b;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 1200px;
-      margin: auto;
-      padding: 40px 0;
-    }
-
-    section {
-      padding: 60px 0;
-    }
-
-    /* Hero */
-    .hero {
-      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center/cover;
-      color: white;
-      text-align: center;
-      padding: 120px 20px;
-    }
-
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-    }
-
-    /* Problem */
-    .problem, .solution, .advantages, .cta, .testimonials {
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      padding: 40px 20px;
-      margin-bottom: 40px;
-    }
-
-    .problem h2, .solution h2, .advantages h2, .cta h2, .testimonials h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #ff6b6b;
-    }
-
-    .stages {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      gap: 20px;
-    }
-
-    .stage {
-      background-color: #fef3f3;
-      flex: 1 1 200px;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-    }
-
-    .stage h3 {
-      margin-bottom: 10px;
-      color: #ff6b6b;
-    }
-
-    .advantages ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .advantages li {
-      margin-bottom: 15px;
-      padding-left: 25px;
-      position: relative;
-    }
-
-    .advantages li::before {
-      content: "✔";
-      position: absolute;
-      left: 0;
-      color: #ff6b6b;
-      font-weight: bold;
-    }
-
-    .cta {
-      text-align: center;
-    }
-
-    .testimonials blockquote {
-      font-style: italic;
-      margin: 20px 0;
-      border-left: 5px solid #ff6b6b;
-      padding-left: 15px;
-      color: #555;
-    }
-
-    footer {
-      background-color: #333;
-      color: white;
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    footer a {
-      color: #ff6b6b;
-      margin: 0 10px;
-    }
-
-    @media(max-width: 768px){
-      .stages {
-        flex-direction: column;
-        gap: 20px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Planner - Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background: linear-gradient(120deg,#d0e8ff,#f0e0ff);
+  color:#1a1a1a;
+}
+.container{max-width:1400px;margin:auto;padding:20px;}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+header h1{font-size:1.8rem;color:#004080;}
+button{cursor:pointer;border:none;border-radius:8px;padding:10px 16px;font-weight:600;background: linear-gradient(90deg,#4a90e2,#8e44ad);color:white;transition:0.3s;}
+button:hover{opacity:0.85; transform:scale(1.05);}
+.trips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+.trip-card{
+  position:relative;
+  background: linear-gradient(135deg,#4a90e2,#8e44ad);
+  border-radius:20px; padding:20px; color:white; box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  display:flex; flex-direction:column; justify-content:space-between; cursor:pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.trip-card:hover{transform:scale(1.03); box-shadow:0 15px 35px rgba(0,0,0,0.25);}
+.trip-title{font-size:1.4rem;font-weight:700;margin-bottom:10px;}
+.trip-info{font-size:0.95rem;margin-bottom:5px;}
+.progress-bar{height:10px;border-radius:8px;background:rgba(255,255,255,0.3);overflow:hidden;margin-top:10px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#00c6ff,#f0e0ff);width:0%;transition:width 0.8s ease;}
+.progress-circle{position:absolute; top:20px; right:20px;}
+.progress-circle circle{fill:none;stroke-width:5;}
+.progress-text{fill:white;font-size:14px;font-weight:700;text-anchor:middle;}
+</style>
 </head>
 <body>
+<div class="container">
+  <header>
+    <h1>My Trips</h1>
+    <button onclick="createTrip()">+ New Trip</button>
+  </header>
+  <div class="trips-grid" id="trips-grid"></div>
+</div>
 
-  <!-- Hero -->
-  <section class="hero">
-    <h1>Групповые поездки без хаоса</h1>
-    <p>Планируйте, согласовывайте и оплачивайте все этапы путешествия в одном месте — легко, быстро и удобно.</p>
-    <button>Начать планирование</button>
-  </section>
+<script>
+// Trips from localStorage
+let trips=JSON.parse(localStorage.getItem('trips'))||[];
 
-  <div class="container">
-    <!-- Problem -->
-    <section class="problem">
-      <h2>Почему планирование поездки так сложно?</h2>
-      <p>Множество чатов, где теряется важная информация</p>
-      <p>Ручные расчёты бюджета и сбор подтверждений</p>
-      <p>Нет ясного финального плана</p>
-      <p>Постоянная необходимость собирать голоса и обновления</p>
-    </section>
+// Render trips
+function renderTrips(){
+  const grid=document.getElementById('trips-grid');
+  grid.innerHTML="";
+  trips.forEach((t,i)=>{
+    const card=document.createElement('div');
+    card.className="trip-card";
+    const circleRadius=28;
+    const circumference=2*Math.PI*circleRadius;
+    const offset=circumference*(1-(t.progress||0)/100);
 
-    <!-- Solution -->
-    <section class="solution">
-      <h2>Организуйте поездку за 5 простых этапов</h2>
-      <div class="stages">
-        <div class="stage">
-          <h3>Inspiration & Research</h3>
-          <p>Просматривайте направления, блоги и фотографии, узнавайте идеи от друзей</p>
-        </div>
-        <div class="stage">
-          <h3>Planning & Comparison</h3>
-          <p>Сравнивайте цены на перелёты, отели, активности, создавайте бюджет</p>
-        </div>
-        <div class="stage">
-          <h3>Booking & Confirmation</h3>
-          <p>Бронируйте, оплачивайте, сохраняйте подтверждения</p>
-        </div>
-        <div class="stage">
-          <h3>Pre-Trip Preparation</h3>
-          <p>Создавайте маршруты, пакуйте вещи, готовьтесь к поездке</p>
-        </div>
-        <div class="stage">
-          <h3>Post-Trip</h3>
-          <p>Делитесь впечатлениями, пишите отзывы, планируйте следующую поездку</p>
-        </div>
-      </div>
-    </section>
+    card.innerHTML=`
+      <div class="trip-title">${t.title}</div>
+      <div class="trip-info">Date: ${t.date}</div>
+      <div class="trip-info">Participants: ${t.participants}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${t.progress||0}%"></div></div>
+      <svg class="progress-circle" width="60" height="60">
+        <circle cx="30" cy="30" r="${circleRadius}" stroke="rgba(255,255,255,0.3)"></circle>
+        <circle cx="30" cy="30" r="${circleRadius}" stroke="#00c6ff" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" style="transition: stroke-dashoffset 0.8s ease;"></circle>
+        <text x="30" y="35" class="progress-text">${t.progress||0}%</text>
+      </svg>
+    `;
+    card.onclick=()=>openTrip(i);
+    grid.appendChild(card);
+  });
+}
 
-    <!-- Advantages -->
-    <section class="advantages">
-      <h2>Что вы получите с нашим сервисом</h2>
-      <ul>
-        <li>Экономия времени — всё в одном месте</li>
-        <li>Прозрачность бюджета — нет ошибок и недоразумений</li>
-        <li>Лёгкое согласование планов — голосования и опросы прямо в приложении</li>
-        <li>Полный контроль — каждый участник в курсе изменений</li>
-      </ul>
-    </section>
+// Create new trip
+function createTrip(){
+  const title=prompt("Enter trip title:");
+  if(!title) return;
+  const date=prompt("Enter trip date (YYYY-MM-DD):","2025-07-01");
+  const participants=parseInt(prompt("Number of participants:", "2"))||2;
+  trips.push({title,date,participants,progress:0,cards:[]});
+  localStorage.setItem('trips',JSON.stringify(trips));
+  renderTrips();
+}
 
-    <!-- CTA -->
-    <section class="cta">
-      <h2>Готовы начать планировать вашу следующую поездку?</h2>
-      <button>Создать поездку</button>
-    </section>
+// Open Pro board
+function openTrip(index){
+  window.location.href=`board.html?tripId=${index}`;
+}
 
-    <!-- Testimonials -->
-    <section class="testimonials">
-      <h2>Наши пользователи довольны</h2>
-      <blockquot
+renderTrips();
+</script>
+</body>
+</html>
