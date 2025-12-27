@@ -3,37 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive Travel Board MVP</title>
+<title>Interactive Travel Board - Blue Theme</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  body {margin:0; font-family:'Inter',sans-serif; background:#f4f5f7; color:#333;}
+  body {
+    margin:0; font-family:'Inter',sans-serif; background:linear-gradient(120deg,#e0f0ff,#f0f8ff); color:#1a1a1a;
+  }
   h1,h2,h3{margin:0;}
-  button{cursor:pointer; border:none; border-radius:5px; padding:8px 12px; font-weight:600; background:#ff6b6b; color:white; transition:0.3s;}
-  button:hover{opacity:0.9;}
+  button{
+    cursor:pointer; border:none; border-radius:6px; padding:8px 12px; font-weight:600;
+    background: linear-gradient(90deg,#4a90e2,#00c6ff);
+    color:white; transition:0.3s;
+  }
+  button:hover{opacity:0.85; transform:scale(1.05);}
   .container{max-width:1400px; margin:auto; padding:20px;}
   .flex{display:flex; gap:10px; flex-wrap:wrap;}
   
-  /* Header */
   header{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;}
-  header h1{font-size:1.8rem;}
+  header h1{font-size:1.8rem; color:#004080;}
   
-  /* Board */
   .board{display:flex; gap:20px; overflow-x:auto; padding-bottom:20px;}
-  .column{background:#e0e4e8; border-radius:10px; min-width:250px; padding:10px; flex-shrink:0;}
-  .column h3{text-align:center; margin-bottom:10px;}
-  .card{background:white; border-radius:8px; padding:10px; margin:10px 0; box-shadow:0 2px 6px rgba(0,0,0,0.15); cursor:grab; transition:0.3s;}
+  .column{
+    background: linear-gradient(180deg,#cce0ff,#99ccff);
+    border-radius:12px; min-width:250px; padding:15px; flex-shrink:0;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  }
+  .column h3{text-align:center; margin-bottom:10px; color:#003366;}
+
+  .card{
+    background:white; border-radius:10px; padding:12px; margin:10px 0;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15); cursor:grab; transition:0.3s;
+    border-left:5px solid #4a90e2;
+  }
   .card.dragging{opacity:0.6; transform:scale(1.05);}
   .card p{font-size:0.85rem; margin:5px 0;}
-  .add-card-btn{background:#4a90e2; margin:10px auto; display:block;}
-  
+  .add-card-btn{background:#0073e6; margin:10px auto; display:block;}
+
   /* Modal */
-  .modal{position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center;}
-  .modal-content{background:white; padding:20px; border-radius:10px; width:300px;}
+  .modal{
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,50,0.6); display:none; justify-content:center; align-items:center;
+  }
+  .modal-content{
+    background:white; padding:20px; border-radius:12px; width:320px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.25);
+  }
   .modal-content label{display:block; margin-top:10px; font-weight:600;}
-  .modal-content input, .modal-content select, .modal-content textarea{width:100%; padding:5px; margin-top:5px; border-radius:5px; border:1px solid #ccc;}
-  
+  .modal-content input, .modal-content select, .modal-content textarea{
+    width:100%; padding:6px; margin-top:5px; border-radius:5px; border:1px solid #ccc;
+  }
+
   /* Budget Panel */
-  .budget-panel{background:white; padding:15px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:20px;}
+  .budget-panel{
+    background:white; padding:18px; border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.12); margin-top:20px;
+  }
 </style>
 </head>
 <body>
@@ -91,6 +115,76 @@
       <option>in progress</option>
       <option>done</option>
     </select>
-    <div style="margin-top:10px; text-align:right;">
+    <div style="margin-top:12px; text-align:right;">
       <button onclick="addCardFromModal()">Add</button>
-      <but
+      <button onclick="closeModal()" style="background:#aaa;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let cards=[];
+
+// Modal functions
+function openModal(){document.getElementById('card-modal').style.display='flex';}
+function closeModal(){document.getElementById('card-modal').style.display='none';}
+
+// Add card
+function addCardFromModal(){
+  const title = document.getElementById('modal-title').value.trim();
+  const category = document.getElementById('modal-category').value;
+  const notes = document.getElementById('modal-notes').value.trim();
+  const cost = parseFloat(document.getElementById('modal-cost').value)||0;
+  const responsible = document.getElementById('modal-responsible').value.trim();
+  const status = document.getElementById('modal-status').value;
+  if(!title || !responsible){alert('Title and Responsible required'); return;}
+  const card = {title, category, notes, cost, responsible, status};
+  cards.push(card);
+  renderBoard();
+  closeModal();
+}
+
+// Render board
+function renderBoard(){
+  document.querySelectorAll('.column').forEach(col=>{
+    col.querySelectorAll('.card').forEach(c=>c.remove());
+  });
+  cards.forEach((c,i)=>{
+    const col = document.querySelector(`.column[data-category="${c.category}"]`);
+    const cardEl = document.createElement('div'); cardEl.className='card';
+    cardEl.draggable=true;
+    cardEl.innerHTML=`<h4>${c.title}</h4><p>${c.notes}</p><p>Cost: $${c.cost}</p><p>Responsible: ${c.responsible}, Status: ${c.status}</p>`;
+    col.appendChild(cardEl);
+
+    cardEl.addEventListener('dragstart', e=>{
+      cardEl.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', i);
+    });
+    cardEl.addEventListener('dragend', ()=>{cardEl.classList.remove('dragging');});
+  });
+  updateBudget();
+}
+
+// Drag-and-drop columns
+document.querySelectorAll('.column').forEach(col=>{
+  col.addEventListener('dragover', e=>{e.preventDefault();});
+  col.addEventListener('drop', e=>{
+    e.preventDefault();
+    const index = e.dataTransfer.getData('text/plain');
+    const newCategory = col.getAttribute('data-category');
+    cards[index].category=newCategory;
+    renderBoard();
+  });
+});
+
+// Budget Calculation
+function updateBudget(){
+  const total = cards.reduce((sum,c)=>sum+c.cost,0);
+  const participants = [...new Set(cards.map(c=>c.responsible))];
+  const perPerson = participants.length>0?(total/participants.length).toFixed(2):0;
+  document.getElementById('total-cost').textContent=total;
+  document.getElementById('per-person').textContent=perPerson;
+}
+</script>
+</body>
+</html>
