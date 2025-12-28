@@ -1,0 +1,553 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { motion, AnimatePresence } from "framer-motion";
+
+export default function App() {
+  const [user, setUser] = useState(null);
+  const [trips, setTrips] = useState([]);
+  const [activeTrip, setActiveTrip] = useState(null);
+  const [view, setView] = useState("login");
+  const [messageInput, setMessageInput] = useState("");
+
+  const login = (name) => {
+    if (!name.trim()) return;
+    setUser({ name: name.trim() });
+    setView("dashboard");
+  };
+
+  const createTrip = () => {
+    const trip = {
+      id: Date.now(),
+      name: "Новая поездка",
+      place: "",
+      budget: "",
+      activities: "",
+      housing: "",
+      transport: "",
+      users: [user.name],
+      progress: 0,
+      chat: [],
+    };
+    setTrips([...trips, trip]);
+    setActiveTrip(trip);
+    setView("plan");
+  };
+
+  const updateTrip = (field, value) => {
+    const updated = { ...activeTrip, [field]: value };
+    const filled = [
+      updated.place,
+      updated.budget,
+      updated.activities,
+      updated.housing,
+      updated.transport,
+    ].filter(Boolean).length;
+    updated.progress = Math.round((filled / 5) * 100);
+    setActiveTrip(updated);
+    setTrips(trips.map((t) => (t.id === updated.id ? updated : t)));
+  };
+
+  const sendMessage = () => {
+    if (!messageInput.trim()) return;
+    const updated = {
+      ...activeTrip,
+      chat: [...activeTrip.chat, { user: user.name, text: messageInput.trim(), time: new Date() }],
+    };
+    setActiveTrip(updated);
+    setTrips(trips.map((t) => (t.id === updated.id ? updated : t)));
+    setMessageInput("");
+  };
+
+  if (view === "login") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="w-full max-w-md shadow-2xl border-0">
+            <CardContent className="p-8 space-y-6">
+              <div className="text-center space-y-2">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  className="text-5xl mb-4"
+                >
+                  ✈️
+                </motion.div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Планировщик поездок
+                </h1>
+                <p className="text-gray-500">Войдите, чтобы начать планирование</p>
+              </div>
+              <div className="space-y-4">
+                <Input
+                  placeholder="Введите ваше имя"
+                  className="h-12 text-lg"
+                  onKeyDown={(e) => e.key === "Enter" && login(e.target.value)}
+                  autoFocus
+                />
+                <Button
+                  onClick={() => login(document.querySelector('input')?.value)}
+                  className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  Войти
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (view === "dashboard") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="max-w-7xl mx-auto"
+        >
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Привет, {user.name}! 👋
+              </h1>
+              <p className="text-gray-600 mt-2">Управляйте своими поездками</p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setUser(null);
+                setView("login");
+              }}
+            >
+              Выйти
+            </Button>
+          </div>
+
+          {trips.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-16"
+            >
+              <div className="text-6xl mb-4">🗺️</div>
+              <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+                У вас пока нет поездок
+              </h2>
+              <p className="text-gray-500 mb-6">Создайте первую поездку, чтобы начать планирование</p>
+              <Button
+                onClick={createTrip}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-6"
+                size="lg"
+              >
+                + Создать первую поездку
+              </Button>
+            </motion.div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <AnimatePresence>
+                {trips.map((trip, index) => (
+                  <motion.div
+                    key={trip.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ scale: 1.03, y: -5 }}
+                    className="cursor-pointer"
+                  >
+                    <Card
+                      onClick={() => {
+                        setActiveTrip(trip);
+                        setView("plan");
+                      }}
+                      className="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm"
+                    >
+                      <CardContent className="p-6 space-y-4">
+                        <div className="flex items-start justify-between">
+                          <h2 className="text-xl font-bold text-gray-800">{trip.name}</h2>
+                          <span className="text-2xl">✈️</span>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-600">Прогресс</span>
+                            <span className="font-semibold text-blue-600">{trip.progress}%</span>
+                          </div>
+                          <Progress
+                            value={trip.progress}
+                            className="h-2"
+                          />
+                        </div>
+                        {trip.place && (
+                          <p className="text-sm text-gray-500 flex items-center gap-1">
+                            📍 {trip.place}
+                          </p>
+                        )}
+                        <div className="pt-2 border-t">
+                          <p className="text-xs text-gray-400">
+                            Участников: {trip.users.length}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.05 }}
+                className="cursor-pointer"
+              >
+                <Card
+                  onClick={createTrip}
+                  className="h-full border-2 border-dashed border-gray-300 hover:border-blue-500 transition-colors bg-white/50 backdrop-blur-sm flex items-center justify-center items-center"
+                >
+                  <CardContent className="p-6 w-full text-center">
+                    <div className="text-4xl mb-3">➕</div>
+                    <p className="text-gray-600 font-medium">Создать поездку</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
+          )}
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (view === "plan" && activeTrip) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-4"
+          >
+            <Button
+              variant="ghost"
+              onClick={() => setView("dashboard")}
+              className="text-lg"
+            >
+              ← Назад
+            </Button>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Планирование поездки
+            </h1>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+              <CardContent className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    📍 Место назначения
+                  </label>
+                  <Input
+                    placeholder="Куда вы хотите поехать?"
+                    value={activeTrip.place}
+                    onChange={(e) => updateTrip("place", e.target.value)}
+                    className="h-12 text-lg"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    💰 Бюджет
+                  </label>
+                  <Input
+                    placeholder="Ваш бюджет на поездку"
+                    value={activeTrip.budget}
+                    onChange={(e) => updateTrip("budget", e.target.value)}
+                    className="h-12 text-lg"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    🎯 Активности
+                  </label>
+                  <Textarea
+                    placeholder="Что вы хотите делать? (музеи, рестораны, развлечения...)"
+                    value={activeTrip.activities}
+                    onChange={(e) => updateTrip("activities", e.target.value)}
+                    className="min-h-[100px] text-lg"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    🏠 Жильё
+                  </label>
+                  <Textarea
+                    placeholder="Где вы планируете остановиться?"
+                    value={activeTrip.housing}
+                    onChange={(e) => updateTrip("housing", e.target.value)}
+                    className="min-h-[100px] text-lg"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    🚗 Транспорт
+                  </label>
+                  <Textarea
+                    placeholder="Как вы будете добираться?"
+                    value={activeTrip.transport}
+                    onChange={(e) => updateTrip("transport", e.target.value)}
+                    className="min-h-[100px] text-lg"
+                  />
+                </div>
+
+                <div className="pt-4 border-t">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-gray-700">Общий прогресс</span>
+                    <span className="text-lg font-bold text-blue-600">{activeTrip.progress}%</span>
+                  </div>
+                  <Progress value={activeTrip.progress} className="h-3" />
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex gap-4 justify-center"
+          >
+            <Button
+              onClick={() => setView("chat")}
+              variant="outline"
+              className="flex-1 max-w-xs h-12 text-lg"
+            >
+              💬 Чат
+            </Button>
+            <Button
+              onClick={() => setView("summary")}
+              className="flex-1 max-w-xs h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            >
+              📋 Саммари
+            </Button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  if (view === "chat" && activeTrip) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-4 mb-6"
+          >
+            <Button
+              variant="ghost"
+              onClick={() => setView("plan")}
+              className="text-lg"
+            >
+              ← Назад
+            </Button>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Чат поездки
+            </h1>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm h-[600px] flex flex-col">
+              <CardContent className="p-6 flex-1 flex flex-col">
+                <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
+                  {activeTrip.chat.length === 0 ? (
+                    <div className="text-center text-gray-400 py-12">
+                      <div className="text-4xl mb-2">💬</div>
+                      <p>Пока нет сообщений. Начните общение!</p>
+                    </div>
+                  ) : (
+                    <AnimatePresence>
+                      {activeTrip.chat.map((m, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0 }}
+                          className={`flex ${m.user === user.name ? "justify-end" : "justify-start"}`}
+                        >
+                          <div
+                            className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                              m.user === user.name
+                                ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                                : "bg-gray-200 text-gray-800"
+                            }`}
+                          >
+                            <div className="font-semibold text-sm mb-1">{m.user}</div>
+                            <div className="text-sm">{m.text}</div>
+                            {m.time && (
+                              <div className="text-xs opacity-70 mt-1">
+                                {new Date(m.time).toLocaleTimeString("ru-RU", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  )}
+                </div>
+                <div className="flex gap-2 pt-4 border-t">
+                  <Input
+                    placeholder="Напишите сообщение..."
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
+                    className="flex-1 h-12"
+                  />
+                  <Button
+                    onClick={sendMessage}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-12 px-6"
+                  >
+                    Отправить
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  if (view === "summary" && activeTrip) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-4"
+          >
+            <Button
+              variant="ghost"
+              onClick={() => setView("plan")}
+              className="text-lg"
+            >
+              ← Назад
+            </Button>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Саммари поездки
+            </h1>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+              <CardContent className="p-8 space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-1">
+                    <div className="text-sm font-semibold text-gray-500 flex items-center gap-2">
+                      📍 Место
+                    </div>
+                    <p className="text-lg font-medium text-gray-800">
+                      {activeTrip.place || "Не указано"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-sm font-semibold text-gray-500 flex items-center gap-2">
+                      💰 Бюджет
+                    </div>
+                    <p className="text-lg font-medium text-gray-800">
+                      {activeTrip.budget || "Не указано"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 md:col-span-2">
+                    <div className="text-sm font-semibold text-gray-500 flex items-center gap-2">
+                      🎯 Активности
+                    </div>
+                    <p className="text-lg text-gray-800 whitespace-pre-wrap">
+                      {activeTrip.activities || "Не указано"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 md:col-span-2">
+                    <div className="text-sm font-semibold text-gray-500 flex items-center gap-2">
+                      🏠 Жильё
+                    </div>
+                    <p className="text-lg text-gray-800 whitespace-pre-wrap">
+                      {activeTrip.housing || "Не указано"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 md:col-span-2">
+                    <div className="text-sm font-semibold text-gray-500 flex items-center gap-2">
+                      🚗 Транспорт
+                    </div>
+                    <p className="text-lg text-gray-800 whitespace-pre-wrap">
+                      {activeTrip.transport || "Не указано"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 md:col-span-2 pt-4 border-t">
+                    <div className="text-sm font-semibold text-gray-500 flex items-center gap-2">
+                      👥 Участники
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {activeTrip.users.map((u, i) => (
+                        <span
+                          key={i}
+                          className="px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-medium text-blue-700"
+                        >
+                          {u}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-gray-700">Общий прогресс</span>
+                    <span className="text-2xl font-bold text-blue-600">{activeTrip.progress}%</span>
+                  </div>
+                  <Progress value={activeTrip.progress} className="h-4" />
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
